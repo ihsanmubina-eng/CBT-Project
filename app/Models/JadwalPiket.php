@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\DetailJadwal;
 use App\Models\HistoriPengerjaan;
 use App\Models\KehadiranSiswa;
+use App\Models\MasterRegu;
 use App\Models\MasterToilet;
 use App\Models\Siswa;
 use Illuminate\Database\Eloquent\Model;
@@ -18,11 +19,16 @@ class JadwalPiket extends Model
 {
     protected $table = 'jadwal_piket';
 
-    protected $fillable = ['hari', 'minggu_ke', 'nama_regu', 'toilet_id', 'status_jadwal'];
+    protected $fillable = ['hari', 'minggu_ke', 'regu_id', 'nama_regu', 'toilet_id', 'status_jadwal'];
 
     protected function casts(): array
     {
-        return ['minggu_ke' => 'integer', 'nama_regu' => 'integer'];
+        return ['minggu_ke' => 'integer', 'nama_regu' => 'integer', 'regu_id' => 'integer'];
+    }
+
+    public function team(): BelongsTo
+    {
+        return $this->belongsTo(MasterRegu::class, 'regu_id');
     }
 
     public function toilet(): BelongsTo
@@ -50,5 +56,10 @@ class JadwalPiket extends Model
     public function report(): HasOne
     {
         return $this->hasOne(HistoriPengerjaan::class, 'jadwal_id');
+    }
+
+    public function reports(): HasMany
+    {
+        return $this->hasMany(HistoriPengerjaan::class, 'jadwal_id');
     }
 }

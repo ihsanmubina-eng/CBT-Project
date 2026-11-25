@@ -16,4 +16,9 @@ class MasterGedung extends Model
     {
         return $this->hasMany(MasterToilet::class, 'gedung_id');
     }
+
+    public function teams(): HasMany
+    {
+        return $this->hasMany(MasterRegu::class, 'gedung_id');
+    }
 }

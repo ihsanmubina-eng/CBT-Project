@@ -16,7 +16,7 @@ class HistoriPengerjaan extends Model
 
     protected $fillable = [
         'tanggal', 'jadwal_id', 'token_id', 'toilet_id', 'pelapor_id', 'status_kebersihan',
-        'catatan', 'status_kunci', 'dikoreksi_oleh', 'alasan_koreksi', 'waktu_koreksi',
+        'status_kehadiran', 'catatan', 'status_kunci', 'dikoreksi_oleh', 'alasan_koreksi', 'waktu_koreksi',
     ];
 
     protected function casts(): array

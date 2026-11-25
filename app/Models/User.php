@@ -8,13 +8,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
-    protected $fillable = ['nama_lengkap', 'username', 'password', 'role'];
+    protected $fillable = ['nama_lengkap', 'username', 'password', 'role', 'foto'];
 
     protected $hidden = ['password', 'remember_token'];
 
@@ -28,6 +29,22 @@ class User extends Authenticatable
         return [
             'password' => 'hashed',
         ];
+    }
+
+    public function getAvatarUrlAttribute(): ?string
+    {
+        if ($this->foto && Storage::disk('public')->exists($this->foto)) {
+            return asset('storage/' . $this->foto);
+        }
+
+        return null;
+    }
+
+    public function getInitialsAttribute(): string
+    {
+        $parts = preg_split('/\s+/', trim((string) $this->nama_lengkap));
+
+        return collect($parts)->take(2)->map(fn ($p) => mb_substr($p, 0, 1))->implode('');
     }
 
     public function tokens(): HasMany

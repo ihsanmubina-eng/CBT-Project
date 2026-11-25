@@ -42,4 +42,9 @@ class Siswa extends Model
     {
         return $this->hasMany(HistoriPengerjaan::class, 'pelapor_id');
     }
+
+    public function ledTeams(): HasMany
+    {
+        return $this->hasMany(MasterRegu::class, 'ketua_siswa_id');
+    }
 }
