@@ -5,7 +5,7 @@
 
 @section('content')
 <div class="page-heading">
-    <div><p class="eyebrow">RINGKASAN HARI INI</p><h1>Selamat datang kembali</h1><p>Pantau jadwal piket dan kondisi fasilitas sekolah.</p></div>
+    <div><p class="eyebrow">Ringkasan hari ini</p><h1>Ringkasan Piket</h1><p>Pantau jadwal piket dan kondisi fasilitas sekolah.</p></div>
     <a class="button button-secondary" href="{{ route('public.dashboard') }}"><i data-lucide="external-link"></i>Lihat tampilan publik</a>
 </div>
 
@@ -40,11 +40,38 @@
 </section>
 <section class="surface surface-pad" style="margin-top:16px">
     <div class="surface-heading"><div><h2>Laporan petugas</h2><p>Laporan terkunci setelah regu mengirim hasil pemeriksaan.</p></div></div>
-    <div class="table-wrap"><table class="data-table"><thead><tr><th>Regu / lokasi</th><th>Status kebersihan</th><th>Catatan</th><th>Status laporan</th><th>Waktu</th></tr></thead><tbody>
+    <div class="table-wrap"><table class="data-table"><thead><tr><th>Regu / lokasi</th><th>Siswa Petugas</th><th>Presensi</th><th>Status kebersihan</th><th>Catatan</th><th>Status laporan</th><th>Waktu</th></tr></thead><tbody>
         @forelse ($reports as $report)
-            <tr><td><strong>Regu {{ $report['team'] }} · {{ $report['building'] }}</strong><small>{{ $report['room'] }}</small></td><td>{{ $report['status_kebersihan'] }}</td><td>{{ $report['catatan'] ?: 'Tanpa catatan' }}</td><td><span class="badge">Terkunci</span></td><td>{{ $report['waktu_kirim'] }}</td></tr>
+            <tr>
+                <td><strong>Regu {{ $report['team'] }} · {{ $report['building'] }}</strong><small>{{ $report['room'] }}</small></td>
+                <td>
+                    <strong>{{ $report['student_name'] }}</strong>
+                    @if (!empty($report['nis']))
+                        <small style="color:var(--text-muted)">NIS: {{ $report['nis'] }} @if(!empty($report['rombel'])) · {{ $report['rombel'] }} @endif</small>
+                    @endif
+                </td>
+                <td>
+                    @if ($report['status_kehadiran'] === 'Tidak Hadir')
+                        <span class="badge badge-danger">Tidak Hadir</span>
+                    @else
+                        <span class="badge badge-success">Hadir</span>
+                    @endif
+                </td>
+                <td>
+                    @if ($report['status_kehadiran'] === 'Tidak Hadir')
+                        <span style="color:var(--text-muted); font-size:12.5px; font-style:italic">Tidak Bertugas (Absen)</span>
+                    @else
+                        <span class="badge {{ $report['status_kebersihan'] === 'Bersih' ? 'badge-success' : ($report['status_kebersihan'] === 'Rusak' ? 'badge-danger' : 'badge-warn') }}">
+                            {{ $report['status_kebersihan'] }}
+                        </span>
+                    @endif
+                </td>
+                <td>{{ $report['catatan'] ?: 'Tanpa catatan' }}</td>
+                <td><span class="badge">Terkunci</span></td>
+                <td>{{ $report['waktu_kirim'] }} WIB</td>
+            </tr>
         @empty
-            <tr><td colspan="5"><div class="empty-state">Belum ada laporan yang dikirim.</div></td></tr>
+            <tr><td colspan="7"><div class="empty-state">Belum ada laporan yang dikirim.</div></td></tr>
         @endforelse
     </tbody></table></div>
 </section>

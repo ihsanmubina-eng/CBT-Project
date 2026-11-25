@@ -19,8 +19,77 @@
         </form>
     </div>
     <div class="surface surface-pad">
-        <div class="surface-heading"><div><h2>Hak akses</h2><p>Peran yang tersedia di panel.</p></div></div>
-        <div class="stat-list"><div class="stat-row"><strong>Admin</strong><span>Pengaturan sistem dan semua data</span></div><div class="stat-row"><strong>Guru</strong><span>Jadwal dan status piket</span></div><div class="stat-row"><strong>Kesiswaan</strong><span>Data siswa dan arsip mutasi</span></div></div>
+        <div class="surface-heading">
+            <div>
+                <h2>Hak akses & peran</h2>
+                <p>Panduan wewenang dan cakupan tugas setiap peran di panel.</p>
+            </div>
+            <i data-lucide="shield-check"></i>
+        </div>
+
+        <div class="role-guide-list">
+            <!-- Role Admin -->
+            <div class="role-guide-card">
+                <div class="role-guide-header">
+                    <div class="role-guide-title">
+                        <i data-lucide="shield"></i>
+                        <span>Admin</span>
+                    </div>
+                    <span class="badge">Akses Penuh</span>
+                </div>
+                <div class="role-guide-desc">
+                    Memegang kendali menyeluruh atas konfigurasi sistem, akun pengguna, dan seluruh master data sekolah.
+                </div>
+                <ul class="role-guide-perms">
+                    <li><i data-lucide="check"></i> Kelola akun login (tambah, ubah peran, hapus)</li>
+                    <li><i data-lucide="check"></i> Master data Gedung, Toilet, Regu, dan Data Siswa</li>
+                    <li><i data-lucide="check"></i> Susun jadwal piket dan terbitkan Token Akses harian</li>
+                </ul>
+            </div>
+
+            <!-- Role Guru -->
+            <div class="role-guide-card">
+                <div class="role-guide-header">
+                    <div class="role-guide-title">
+                        <i data-lucide="user-check"></i>
+                        <span>Guru</span>
+                    </div>
+                    <span class="badge badge-blue">Monitoring Piket</span>
+                </div>
+                <div class="role-guide-desc">
+                    Koordinator piket harian yang memantau pelaksanaan kebersihan dan presensi siswa di lapangan.
+                </div>
+                <ul class="role-guide-perms">
+                    <li><i data-lucide="check"></i> Pantau status kebersihan toilet per gedung secara real-time</li>
+                    <li><i data-lucide="check"></i> Rekap kehadiran siswa petugas piket (Hadir / Tidak Hadir)</li>
+                    <li><i data-lucide="check"></i> Tinjau jadwal dan verifikasi laporan kebersihan toilet</li>
+                </ul>
+            </div>
+
+            <!-- Role Kesiswaan -->
+            <div class="role-guide-card">
+                <div class="role-guide-header">
+                    <div class="role-guide-title">
+                        <i data-lucide="graduation-cap"></i>
+                        <span>Kesiswaan</span>
+                    </div>
+                    <span class="badge badge-warn">Data & Mutasi</span>
+                </div>
+                <div class="role-guide-desc">
+                    Pengelola data induk kesiswaan, riwayat mutasi siswa, serta integritas rekam jejak kedisiplinan.
+                </div>
+                <ul class="role-guide-perms">
+                    <li><i data-lucide="check"></i> Kelola data siswa aktif, rombel, dan import CSV/Excel</li>
+                    <li><i data-lucide="check"></i> Proses mutasi siswa (pindah sekolah, mutasi kelas, lulus)</li>
+                    <li><i data-lucide="check"></i> Otomatisasi penonaktifan jadwal siswa mutasi & arsip histori</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="notice" style="margin-top: 14px; margin-bottom: 0;">
+            <i data-lucide="info"></i>
+            <span><strong>Catatan:</strong> Siswa petugas piket tidak memerlukan akun pengguna, melainkan mengakses portal menggunakan <strong>Token Akses Harian</strong>.</span>
+        </div>
     </div>
 </section>
 <section class="surface surface-pad" style="margin-top:16px">

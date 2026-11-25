@@ -26,7 +26,7 @@
         </div>
         <div class="table-wrap"><table class="data-table js-datatable"><thead><tr><th>No</th><th>Nama siswa</th><th>Rombel</th><th>Gedung / toilet</th><th>Status piket</th><th>Kehadiran</th></tr></thead><tbody>
             @forelse ($assignments as $index => $assignment)
-                <tr><td>{{ str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT) }}</td><td><strong>{{ $assignment['students'] }}</strong><small>{{ $assignment['day'] }} · Minggu {{ $assignment['week'] }}</small></td><td>{{ $assignment['class'] }}</td><td><strong>{{ $assignment['building'] }}</strong><small>{{ $assignment['room'] }}</small></td><td><span class="badge {{ $assignment['status'] === 'Selesai' ? '' : 'badge-warn' }}">{{ $assignment['status'] }}</span></td><td><span class="badge {{ $assignment['attendance'] === 'Hadir' ? '' : 'badge-warn' }}">{{ $assignment['attendance'] }}</span></td></tr>
+                <tr><td>{{ str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT) }}</td><td><strong>{{ $assignment['students'] }}</strong><small>{{ $assignment['day'] }} · Minggu {{ $assignment['week'] }}</small></td><td>{{ $assignment['class'] }}</td><td><strong>{{ $assignment['building'] }}</strong><small>{{ $assignment['room'] }}</small></td><td><span class="badge {{ $assignment['status'] === 'Selesai' ? 'badge-success' : 'badge-warn' }}">{{ $assignment['status'] }}</span></td><td><span class="badge {{ $assignment['attendance'] === 'Hadir' ? 'badge-success' : 'badge-warn' }}">{{ $assignment['attendance'] }}</span></td></tr>
             @empty
                 <tr><td colspan="6"><div class="empty-state">Tidak ada jadwal yang cocok.</div></td></tr>
             @endforelse
