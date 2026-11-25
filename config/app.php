@@ -69,6 +69,17 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Include Weekend in Schedule
+    |--------------------------------------------------------------------------
+    |
+    | When true, Sabtu and Minggu are valid for scheduling and debugging.
+    | Set to false in production if school only operates Monday - Friday.
+    |
+    */
+    'allow_weekend' => (bool) env('SCHEDULE_ALLOW_WEEKEND', true),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Locale Configuration
     |--------------------------------------------------------------------------
     |

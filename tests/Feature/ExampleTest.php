@@ -74,7 +74,7 @@ class ExampleTest extends TestCase
 
     public function test_petugas_report_is_saved_to_database_and_locks_after_first_submission(): void
     {
-        [$user, $toilet, , $schedule] = $this->createTaskForToday(1);
+        [$user, $toilet, $student, $schedule] = $this->createTaskForToday(1);
         $token = $this->createToken($user, 1);
         $this->post(route('login.student'), [
             'token' => $token->kode_token,
@@ -82,29 +82,38 @@ class ExampleTest extends TestCase
         ])->assertRedirect(route('petugas.dashboard'));
 
         $this->post(route('petugas.report'), [
+            'schedule_id' => $schedule->id,
+            'student_id' => $student->id,
+            'status_kehadiran' => 'Hadir',
             'status_kebersihan' => 'Bersih',
             'catatan' => 'Sudah diperiksa oleh regu.',
-        ])->assertRedirect(route('petugas.dashboard'))
-            ->assertSessionHas('success', 'Laporan sudah dikirim dan dikunci.');
+        ])->assertRedirect(route('petugas.dashboard', ['schedule_id' => $schedule->id]))
+            ->assertSessionHas('success');
 
-        $this->get(route('petugas.dashboard'))
+        $this->get(route('petugas.dashboard', ['schedule_id' => $schedule->id]))
             ->assertOk()
-            ->assertSee('Status kebersihan: Bersih')
-            ->assertSee('Terkunci');
+            ->assertSee('Bersih')
+            ->assertSee('Laporan terkunci');
+
         $this->assertDatabaseHas('histori_pengerjaan', [
             'jadwal_id' => $schedule->id,
             'token_id' => $token->id,
             'toilet_id' => $toilet->id,
+            'pelapor_id' => $student->id,
+            'status_kehadiran' => 'Hadir',
             'status_kebersihan' => 'Bersih',
             'status_kunci' => 'Terkunci',
         ]);
 
-        $this->from(route('petugas.dashboard'))
+        $this->from(route('petugas.dashboard', ['schedule_id' => $schedule->id]))
             ->post(route('petugas.report'), [
+                'schedule_id' => $schedule->id,
+                'student_id' => $student->id,
+                'status_kehadiran' => 'Hadir',
                 'status_kebersihan' => 'Rusak',
                 'catatan' => 'Percobaan laporan kedua.',
-            ])->assertRedirect(route('petugas.dashboard'))
-            ->assertSessionHas('error', 'Laporan regu ini sudah dikirim dan terkunci.');
+            ])->assertRedirect(route('petugas.dashboard', ['schedule_id' => $schedule->id]))
+            ->assertSessionHas('error', 'Laporan untuk siswa ini sudah dikirim dan terkunci.');
     }
 
     public function test_staff_can_import_a_csv_schedule_for_multiple_database_teams(): void
@@ -184,6 +193,79 @@ class ExampleTest extends TestCase
             ->assertSessionHas('success', '1 data siswa berhasil diimpor.');
 
         $this->assertDatabaseHas('siswa', ['nis' => '001', 'nama_lengkap' => 'Rian Hidayat']);
+    }
+
+    public function test_staff_can_view_profile_page(): void
+    {
+        $user = $this->staff();
+
+        $this->get(route('profile.show'))
+            ->assertOk()
+            ->assertSee($user->nama_lengkap)
+            ->assertSee($user->username)
+            ->assertSee('Profil Saya');
+    }
+
+    public function test_staff_can_update_profile_info(): void
+    {
+        $user = $this->staff();
+
+        $this->put(route('profile.update'), [
+            'nama_lengkap' => 'Nama Baru Diperbarui',
+            'username' => 'user.baru',
+        ])->assertRedirect()
+            ->assertSessionHas('success');
+
+        $this->assertDatabaseHas('users', [
+            'id' => $user->id,
+            'nama_lengkap' => 'Nama Baru Diperbarui',
+            'username' => 'user.baru',
+        ]);
+    }
+
+    public function test_staff_can_change_password_with_valid_current_password(): void
+    {
+        $user = $this->staff();
+
+        $this->put(route('profile.password'), [
+            'current_password' => 'StrongPass123!',
+            'password' => 'NewSecretPassword123!',
+            'password_confirmation' => 'NewSecretPassword123!',
+        ])->assertRedirect()
+            ->assertSessionHas('success');
+
+        $user->refresh();
+        $this->assertTrue(\Illuminate\Support\Facades\Hash::check('NewSecretPassword123!', $user->password));
+    }
+
+    public function test_staff_can_upload_and_remove_avatar_photo(): void
+    {
+        \Illuminate\Support\Facades\Storage::fake('public');
+        $user = $this->staff();
+
+        $file = UploadedFile::fake()->image('profile.jpg', 200, 200);
+
+        $this->put(route('profile.update'), [
+            'nama_lengkap' => $user->nama_lengkap,
+            'username' => $user->username,
+            'foto' => $file,
+        ])->assertRedirect()
+            ->assertSessionHas('success');
+
+        $user->refresh();
+        $this->assertNotNull($user->foto);
+        \Illuminate\Support\Facades\Storage::disk('public')->assertExists($user->foto);
+
+        // Test delete avatar photo
+        $this->put(route('profile.update'), [
+            'nama_lengkap' => $user->nama_lengkap,
+            'username' => $user->username,
+            'hapus_foto' => '1',
+        ])->assertRedirect()
+            ->assertSessionHas('success');
+
+        $user->refresh();
+        $this->assertNull($user->foto);
     }
 
     private function staff(): User
