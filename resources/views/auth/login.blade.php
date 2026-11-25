@@ -36,7 +36,7 @@
                 <label class="field"><span>Username</span><input name="username" value="{{ old('username') }}" autocomplete="username" required></label>
                 <label class="field"><span>Kata sandi</span><input name="password" type="password" autocomplete="current-password" required></label>
                 <button class="button button-primary button-full" type="submit"><i data-lucide="log-in"></i>Masuk ke dashboard</button>
-                <p class="form-hint"><i data-lucide="info"></i>Akun staf pertama dibuat melalui perintah <strong>php artisan resikkita:create-staff-user</strong>.</p>
+                <p class="form-hint"><i data-lucide="info"></i>Gunakan akun staf terdaftar untuk mengakses dashboard manajemen.</p>
             </form>
             <form class="form-stack {{ $studentHasError ? '' : 'is-hidden' }}" id="student-panel" method="post" action="{{ route('login.student') }}" data-auth-panel="student" aria-hidden="{{ $studentHasError ? 'false' : 'true' }}">
                 @csrf
